@@ -44,20 +44,23 @@ Example: Run a task for all branches other than master
 #### Boolean
 `true` or `false` (ordinal case insensitive)
 
+#### Null
+Null is a special type that is returned from a dictionary miss only, e.g. (`variables('noSuch')`). There is no keyword for null.
+
 #### Number
 Starts with `-` `.` or `0-9`. Internally parses into .Net `Decimal` type using invariant culture.
 
 Cannot contain `,` since it is a separator.
 
-#### Version
-Starts with a number and contains two or three `.`. Internall parses into .Net `Version` type.
-
-Note, only one `.` is present, then the value would be parsed as a number.
-
 #### String
 Single-quoted, e.g. 'this is a string' or ''
 
 Literal single-quote escaped by two single quotes, e.g. 'all y''all'
+
+#### Version
+Starts with a number and contains two or three `.`. Internall parses into .Net `Version` type.
+
+Note, only one `.` is present, then the value would be parsed as a number.
 
 <!--#### Object
 Pre-defined complex objects are available depending on the context.
@@ -89,79 +92,77 @@ Examples for complex objects:
 * When an accessor is applied against a non-dictionary object (including null), null is returned.
  - This means that `someObject('noSuchKey').alsoNoSuchKey.alsoAlsoNoSuchKey` will simply return null.
 -->
-#### Null
-Null is a special type that is returned from a dictionary miss only, e.g. (`variables('noSuch')`). There is no keyword for null.
 
 ### Type Casting
 
-Based on the context, a value may be implicitly cast to another type.
+#### Conversion chart
+Detailed conversion rules are listed further below.
+
+|      |         | To      |         |         |         |         |         |         |
+|      |         | Array   | Boolean | Null    | Number  | Object  | String  | Version |
+| From | Array   | -       | Yes     | -       | -       | -       | -       | -       |
+|      | Boolean | -       | -       | -       | Yes     | -       | Yes     | -       |
+|      | Null    | -       | Yes     | -       | Yes     | -       | Yes     | -       |
+|      | Number  | -       | Yes     | -       | -       | -       | Yes     | Partial |
+|      | Object  | -       | Yes     | -       | -       | -       | -       | -       |
+|      | String  | -       | Yes     | Partial | Partial | -       | -       | Partial |
+|      | Version | -       | Yes     | -       | -       | -       | Yes     | -       |
+
+#### Array to Boolean
+* =\> True
 
 #### Boolean to Number
 * False =\> 0
 * True =\> 1
 
-#### Boolean to Version
-* Not convertible
-
 #### Boolean to String
 * False =\> 'False'
 * True =\> 'True'
 
+#### Null to Boolean
+* =\> False
+
+#### Null to Number
+* =\> 0
+
+#### Null to String
+* =\> Empty string
+
 #### Number to Boolean
 * 0 =\> False
-* Otherwise True
+* Otherwise =\> True
 
 #### Number to Version
 * Must be greater than zero and must contain a non-zero decimal. Must be less than Int32.MaxValue (decimal component also).
 
 #### Number to String
-* Invariant-culture ToString
+* =\> Invariant-culture ToString
+
+#### Object to Boolean
+* =\> True
 
 #### String to Boolean
 * Empty string =\> False
-* Otherwise True
+* Otherwise =\> True
+
+#### String to Null
+* Empty string =\> Null
+* Otherwise not convertible
 
 #### String to Number
-* Empty string => 0
-* Otherwise parsed using invariant-culture and the following rules: AllowDecimalPoint | AllowLeadingSign | AllowLeadingWhite | AllowThousands | AllowTrailingWhite
+* Empty string =\> 0
+* Otherwise try-parse using invariant-culture and the following rules: AllowDecimalPoint | AllowLeadingSign | AllowLeadingWhite | AllowThousands | AllowTrailingWhite. If try-parse fails, then not convertible.
 
-#### String to Version
-* Must contain Major and Minor component at minimum.
+#### String to Version???
+* Try-parse. Must contain Major and Minor component at minimum. If try-parse fails, then not convertible.
 
 #### Version to Boolean
-* True
-
-#### Version to Number
-* Not convertible
+* =\> True
 
 #### Version to String
 * Major.Minor
 * or Major.Minor.Build
 * or Major.Minor.Build.Revision
-
-<!--#### Object to Boolean
-* True
-
-#### Object to Number
-* Not convertible
-
-#### Object to Version
-* Not convertible
-
-#### Object to String
-* Empty string-->
-
-#### Null to Boolean
-* False
-
-#### Null to Number
-* 0
-
-#### Null to Version
-* Not convertible
-
-#### Null to String
-* Empty string
 
 ### Functions
 
