@@ -100,6 +100,7 @@ Detailed conversion rules are listed further below.
 
 |      |         | To      |         |         |         |         |         |         |
 |      |         | Array   | Boolean | Null    | Number  | Object  | String  | Version |
+| ---- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- |
 | From | Array   | -       | Yes     | -       | -       | -       | -       | -       |
 |      | Boolean | -       | -       | -       | Yes     | -       | Yes     | -       |
 |      | Null    | -       | Yes     | -       | Yes     | -       | Yes     | -       |
