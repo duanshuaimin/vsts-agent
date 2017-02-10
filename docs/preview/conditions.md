@@ -35,7 +35,10 @@ Example: Run a task for all branches other than master
  - TODO: Wrap `Value` in single-quotes, unless already contains a single-quote? (required to enable `in`)
 * Custom
  - When custom is selected, a text area becomes visible.
- - Evaluation will implicitly wrap `and(success(), ...)` if agent.jobstatus variable or job status functions not referenced.
+ - ~~~Evaluation will implicitly wrap `and(success(), ...)` if agent.jobstatus variable or job status functions not referenced.~~~ Coalesce with `success()` when custom condition is selected and the text area is left empty.
+
+## Open issues
+* Need to determine whether variable macro expansion is supported within the expression. Matters for how rules are applied in the future w.r.t. inline expressions.
 
 ## Technical reference
 
@@ -109,6 +112,8 @@ Detailed conversion rules are listed further below.
 |          | **String**  | -           | Yes         | Partial     | Partial     | -           | -           | Partial     |
 |          | **Version** | -           | Yes         | -           | -           | -           | Yes         | -           |
 
+Note, Array and Object not currently exposed via any expressions available on the agent
+
 #### Array to Boolean
 * =\> True
 
@@ -154,7 +159,7 @@ Detailed conversion rules are listed further below.
 * Empty string =\> 0
 * Otherwise try-parse using invariant-culture and the following rules: AllowDecimalPoint | AllowLeadingSign | AllowLeadingWhite | AllowThousands | AllowTrailingWhite. If try-parse fails, then not convertible.
 
-#### String to Version???
+#### String to Version
 * Try-parse. Must contain Major and Minor component at minimum. If try-parse fails, then not convertible.
 
 #### Version to Boolean
@@ -208,6 +213,7 @@ Detailed conversion rules are listed further below.
 * Min parameters: 1. Max parameters: N
 * Converts right parameters to match type of left parameter. Equality comparison evaluates False if conversion fails.
 * Ordinal ignore-case comparison for Strings
+* Short-circuits after first match
 
 #### le
 * Evaluates True if left parameter is less than or equal to the right parameter
@@ -237,6 +243,7 @@ Detailed conversion rules are listed further below.
 * Min parameters: 1. Max parameters: N
 * Converts right parameters to match type of left parameter. Equality comparison evaluates False if conversion fails.
 * Ordinal ignore-case comparison for Strings
+* Short-circuits after first match
 
 #### or
 * Evaluates True if any parameter is true
